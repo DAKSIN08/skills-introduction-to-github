@@ -1,0 +1,38 @@
+Select *
+from PortfolioProject..Covid_Death$
+order by 3,4
+
+--Select *
+--from PortfolioProject..Covid_Vaccination$
+--order by 3,4
+
+Select location, date, total_cases, new_cases, total_deaths, population
+from PortfolioProject..Covid_Death$
+order by 1,2
+
+-- Looking at total cases vs total deaths
+
+Select location, date, convert(bigint,total_cases) as total_cases, convert(bigint, total_deaths) as total_deaths,
+Round(convert(float, total_deaths)/convert(float,total_cases), 2) * 100 as Deaths_Percentage
+from PortfolioProject..Covid_Death$
+Where total_deaths is not null  and location like '%Indi%'
+order by 1,5;
+
+--Looking  at total cases vs population
+
+Select location, date, convert(bigint, population) as population, convert(bigint,total_cases) as total_cases,
+(convert(float, total_cases))/(convert(float, population)) * 100 as Infected_Percentage
+from PortfolioProject..Covid_Death$
+Where total_deaths is not null  and location like '%Indi%'
+order by 1,2
+
+--Looking at countries with higher infected rate compared to population
+
+Select location, convert(bigint, population) as population, max(convert(bigint,total_cases)) as total_cases,
+MAX(convert(float, total_cases)/convert(float, population)) * 100 as Infected_Percentage
+from PortfolioProject..Covid_Death$
+Where total_deaths is not null
+Group by location, population
+order by 4 desc
+
+ 
